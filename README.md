@@ -2,7 +2,7 @@
 
 > **Enlaces del proyecto**
 
-**Link:** `https://hunabbohorquez.github.io/SerieTrack/`
+**Link:** `(https://hunabbohorquez.github.io/SerieTrack/)`
 
 **Repositorio en GitHub:** `https://github.com/HunabBohorquez/SerieTrack`
 
