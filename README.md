@@ -1,10 +1,10 @@
 # 🎬 SerieTrack — Gestor y Analizador de Progreso Audiovisual
 
-> **Enlaces del proyecto** — _pega aquí tus URLs antes de entregar_
+> **Enlaces del proyecto**
 
-**Link:** `(espacio para pegar el link)`
+**Link:** `https://hunabbohorquez.github.io/SerieTrack/`
 
-**Repositorio en GitHub:** `(espacio para pegar el link)`
+**Repositorio en GitHub:** `https://github.com/HunabBohorquez/SerieTrack`
 
 > 📝 **Nota:** este proyecto tiene los **mismos archivos** que el repositorio de GitLab
 > (`index.html`, `styles.css`, `app.js`, `README.md`). Solo cambia la plataforma de alojamiento.
