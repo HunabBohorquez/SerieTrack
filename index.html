@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="SerieTrack — Gestor y analizador de progreso audiovisual para series y películas." />
+  <title>SerieTrack · Gestor y Analizador de Progreso Audiovisual</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <a class="skip-link" href="#contenido">Saltar al contenido principal</a>
+
+  <!-- ================= CABECERA ================= -->
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand__logo" aria-hidden="true">🎬</span>
+      <div class="brand__text">
+        <h1 class="brand__title">Serie<span>Track</span></h1>
+        <p class="brand__subtitle">Gestor y analizador de progreso audiovisual</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" id="btn-demo" class="btn btn--ghost">📦 Cargar datos demo</button>
+      <button type="button" id="btn-export" class="btn btn--ghost">⬇️ Exportar JSON</button>
+      <button type="button" id="btn-import" class="btn btn--ghost">⬆️ Importar JSON</button>
+      <input type="file" id="file-import" accept="application/json,.json" hidden />
+      <button type="button" id="btn-theme" class="btn btn--icon" aria-label="Cambiar tema" title="Cambiar tema">🌙</button>
+      <button type="button" id="btn-clear" class="btn btn--danger">🗑️ Borrar todo</button>
+    </div>
+  </header>
+
+  <!-- ================= CONTENIDO ================= -->
+  <main id="contenido" class="app-grid">
+
+    <!-- ---------- PANEL DE ESTADÍSTICAS ---------- -->
+    <section class="panel panel--stats" aria-labelledby="stats-title">
+      <div class="panel__head">
+        <h2 id="stats-title" class="panel__title">📊 Estadísticas en vivo</h2>
+        <span class="hint">Calculadas sobre toda la biblioteca</span>
+      </div>
+
+      <div class="stats-layout">
+        <div class="stats-grid">
+          <article class="stat">
+            <p class="stat__label">Total de títulos</p>
+            <p class="stat__value" id="stat-total">0</p>
+          </article>
+
+          <article class="stat">
+            <p class="stat__label">Series terminadas</p>
+            <p class="stat__value" id="stat-series-term">0</p>
+          </article>
+
+          <article class="stat">
+            <p class="stat__label">Episodios vistos</p>
+            <p class="stat__value" id="stat-episodios">0</p>
+          </article>
+
+          <article class="stat">
+            <p class="stat__label">Tiempo invertido</p>
+            <p class="stat__value" id="stat-horas">0 h</p>
+            <p class="stat__detail" id="stat-dias">≈ 0 días</p>
+          </article>
+
+          <article class="stat">
+            <p class="stat__label">Calificación promedio</p>
+            <p class="stat__value" id="stat-promedio">—</p>
+            <p class="stat__detail" id="stat-promedio-detalle">Sin calificaciones</p>
+          </article>
+        </div>
+
+        <div class="chart">
+          <h3 class="chart__title">Distribución por estado</h3>
+          <div class="chart__canvas-wrap">
+            <canvas
+              id="chart-estados"
+              role="img"
+              aria-label="Gráfico de barras con la distribución de títulos por estado"
+            ></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- FORMULARIO CRUD ---------- -->
+    <section class="panel panel--form" aria-labelledby="form-heading">
+      <div class="panel__head">
+        <h2 id="form-heading" class="panel__title">Añadir título</h2>
+      </div>
+
+      <form id="form-title" novalidate autocomplete="off">
+        <input type="hidden" id="field-id" value="" />
+
+        <div class="field">
+          <label for="field-titulo">Título <span class="req">*</span></label>
+          <input type="text" id="field-titulo" maxlength="80" placeholder="Ej. Breaking Bad" />
+          <small class="field__error" data-error-for="titulo"></small>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="field-tipo">Tipo</label>
+            <select id="field-tipo">
+              <option value="Serie">📺 Serie</option>
+              <option value="Película">🎞️ Película</option>
+            </select>
+            <small class="field__error" data-error-for="tipo"></small>
+          </div>
+
+          <div class="field">
+            <label for="field-estado">Estado</label>
+            <select id="field-estado">
+              <option value="Viendo">Viendo</option>
+              <option value="Terminada">Terminada</option>
+              <option value="Pendiente" selected>Pendiente</option>
+              <option value="Abandonada">Abandonada</option>
+            </select>
+            <small class="field__error" data-error-for="estado"></small>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="field-temporada">Temporada actual</label>
+            <input type="number" id="field-temporada" min="0" step="1" value="1" />
+            <small class="field__error" data-error-for="temporada"></small>
+          </div>
+
+          <div class="field">
+            <label for="field-duracion">Duración (min/unidad)</label>
+            <input type="number" id="field-duracion" min="1" step="1" value="45" />
+            <small class="field__error" data-error-for="duracion"></small>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="field-vistos">Episodios vistos</label>
+            <input type="number" id="field-vistos" min="0" step="1" value="0" />
+            <small class="field__error" data-error-for="vistos"></small>
+          </div>
+
+          <div class="field">
+            <label for="field-totales">Episodios totales</label>
+            <input type="number" id="field-totales" min="1" step="1" value="10" />
+            <small class="field__error" data-error-for="totales"></small>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="field-calificacion">
+            Calificación: <output id="out-calificacion" for="field-calificacion">0.0</output> / 10
+          </label>
+          <input type="range" id="field-calificacion" min="0" max="10" step="0.1" value="0" />
+          <small class="field__error" data-error-for="calificacion"></small>
+        </div>
+
+        <div class="field">
+          <label for="field-notas">Notas breves</label>
+          <textarea id="field-notas" rows="2" maxlength="240" placeholder="Opinión, dónde la viste, con quién…"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary" id="btn-submit">Añadir título</button>
+          <button type="button" class="btn btn--ghost" id="btn-cancel" hidden>Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ---------- LISTA + FILTROS ---------- -->
+    <section class="panel panel--list" aria-labelledby="list-title">
+      <div class="panel__head">
+        <h2 id="list-title" class="panel__title">📚 Mi biblioteca</h2>
+        <span class="badge badge--count" id="results-count">0 títulos</span>
+      </div>
+
+      <div class="filters">
+        <div class="field field--search">
+          <label for="filter-search">Buscar</label>
+          <input type="search" id="filter-search" placeholder="Título o notas…" />
+        </div>
+
+        <div class="field">
+          <label for="filter-estado">Estado</label>
+          <select id="filter-estado">
+            <option value="">Todos</option>
+            <option value="Viendo">Viendo</option>
+            <option value="Terminada">Terminada</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Abandonada">Abandonada</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="filter-tipo">Tipo</label>
+          <select id="filter-tipo">
+            <option value="">Todos</option>
+            <option value="Serie">Series</option>
+            <option value="Película">Películas</option>
+          </select>
+        </div>
+
+        <button type="button" id="btn-reset-filters" class="btn btn--ghost btn--sm">✖ Limpiar filtros</button>
+      </div>
+
+      <div id="cards-grid" class="cards-grid"></div>
+
+      <div id="empty-state" class="empty-state" hidden>
+        <p class="empty-state__icon" aria-hidden="true">🍿</p>
+        <h3 id="empty-title" class="empty-state__title">Tu biblioteca está vacía</h3>
+        <p id="empty-text" class="empty-state__text">
+          Añade tu primer título con el formulario o carga los datos demo para explorar la aplicación.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
